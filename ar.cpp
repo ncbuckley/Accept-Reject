@@ -16,40 +16,31 @@ using namespace std;
 int main(){
 
   clock_t start = clock();
-  double x = 0;
-  double y = 0;
+  Double_t x;
+  Double_t y;
   double N = 10e5;
-  int bins = 50;
-  int accepted = 0;
-  int rejected = 0;
+  int bins = 100;
   
   //Create a new TFile with TTree ar containing double values acc
   TFile *a = new TFile("accept_reject.root","recreate");
   TTree *ar = new TTree("ar", "Tree with generated values");
   Double_t acc;
 
-  ar ->Branch("acc",&acc);
+  ar ->Branch("acc",&acc, "acc/D");
 
   //Create a 1d histogram 
   TFile* oFile = TFile::Open("Hist_ar.root","recreate");
-  TH1D* Hist_acc = new TH1D("acc","Accepted Numbers", bins, 0, 8);
+  TH1D* Hist_acc = new TH1D("Hist_acc","Accepted Numbers", bins, 0, 8);
 
   //Generate random values x and y N times, if y value is below or on e^(-x/2) fill to acc
-  for(Int_t i = 1; i <= N; i++){
+  for(Int_t i = 0; i <= N; i++){
     x = RandomReal(0,8);
     y = RandomReal(0,1);
 
     if( y <=  exp(x*-0.5) ){
       acc = x;
-      ar-> Fill();
-      
-      accepted++;
-      continue;
     }
-    
-    else;
-      rejected++;
-      continue;
+    ar -> Fill();
   }
 
   //Take accepted x values from TTree ar and fill histogram
@@ -68,15 +59,15 @@ int main(){
 
   std::cout << std::fixed;
   std::cout << std::setprecision(5);
-  std::cout <<"Time: "<< run_time <<" " << accepted <<" "<< rejected <<  endl;
+  std::cout <<"Time: "<< run_time << endl;
   
   return 0;
 
   /* From the fit parameters: exp(c + mx)
-     c =  1.00082e+01
-     m = -0.52529e+00
+     c =  1.13127e+01
+     m = -5.02613e-01
 
-     Time to run: 12.29397 s
+     Time to run: 12.30596 s
   */
   
 }
